@@ -1,0 +1,15 @@
+{
+  "files.associations": {
+    "*.embeddedhtml": "html",
+    "stm32f446xx.h": "c",
+    "stm32f4xx.h": "c",
+    "gpio.h": "c",
+    "pwm.h": "c",
+    "stm32f446xx_tim.h": "c",
+    "stm32f446xx_uart.h": "c",
+    "stm32f446xx_isr.h": "c",
+    "stm32f446xx_gpio.h": "c"
+  },
+  "cmake.configureOnOpen": true,
+  "cortex-debug.variableUseNaturalFormat": false
+}
