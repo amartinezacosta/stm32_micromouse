@@ -1,4 +1,4 @@
-#include "stm32f446xx_gpio.h"
+#include "drivers/stm32f446xx_gpio.h"
 
 void stm32f446xx_gpio_init(const uint32_t address,
   const uint16_t pins,

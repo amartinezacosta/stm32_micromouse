@@ -34,12 +34,16 @@ DRIVERS_SOURCES = drivers/stm32f446xx_gpio.c 	\
 									drivers/stm32f446xx_uart.c 	\
 									drivers/stm32f446xx_isr.c 	\
 									drivers/ringbuffer.c
+DEVICES_SOURCES = devices/led.c	\
+									devices/logger.c \
+									devices/motor.c
 THIRD_PARTY_SOURCES = third_party/printf/printf.c									 				
 SOURCES = main.c \
 					stm32f446xx_startup_gcc.c \
 					stm32f446xx_system.c \
 					$(DRIVERS_SOURCES) \
-					$(THIRD_PARTY_SOURCES)
+					$(THIRD_PARTY_SOURCES) \
+					$(DEVICES_SOURCES)
 OBJECT_NAMES = $(SOURCES:.c=.o)
 OBJECTS = $(patsubst %, $(OBJ_DIR)/%, $(OBJECT_NAMES))
 

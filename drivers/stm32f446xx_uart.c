@@ -1,4 +1,4 @@
-#include "stm32f446xx_uart.h"
+#include "drivers/stm32f446xx_uart.h"
 
 void stm32f446_usart_handler(void *args);
 
@@ -103,26 +103,3 @@ void stm32f446_usart_handler(void *args)
     ringbuffer_write(self->rx_ringbuffer, c);
   }
 }
-
-/*USART2 resources------------------------------------------------------------*/
-stm32f446xx_isr_t stm32f446xx_usart2_isr;
-
-uint8_t stm32f446xx_usart2_tx_buffer[STM32F466XX_USART2_TX_BUFFER_SIZE];
-uint8_t stm32f446xx_usart2_rx_buffer[STM32F466XX_USART2_RX_BUFFER_SIZE];
-
-ringbuffer_t stm32f446xx_usart2_tx_ringbuffer;
-ringbuffer_t stm32f446xx_usart2_rx_ringbuffer;
-
-stm32f446xx_usart_t stm32f446xx_usart_2 = 
-{
-  .address = USART2_BASE,
-  .rx_ringbuffer = &stm32f446xx_usart2_rx_ringbuffer,
-  .tx_ringbuffer = &stm32f446xx_usart2_tx_ringbuffer,
-  .tx_buffer = &stm32f446xx_usart2_tx_buffer[0],
-  .rx_buffer = &stm32f446xx_usart2_rx_buffer[0],
-  .tx_buffer_length = STM32F466XX_USART2_TX_BUFFER_SIZE,
-  .rx_buffer_length = STM32F466XX_USART2_RX_BUFFER_SIZE,
-  .isr = &stm32f446xx_usart2_isr
-};
-
-stm32f446xx_usart_t * const UART_0 = &stm32f446xx_usart_2;

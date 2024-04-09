@@ -8,7 +8,10 @@
     "stm32f446xx_tim.h": "c",
     "stm32f446xx_uart.h": "c",
     "stm32f446xx_isr.h": "c",
-    "stm32f446xx_gpio.h": "c"
+    "stm32f446xx_gpio.h": "c",
+    "motor.h": "c",
+    "logger.h": "c",
+    "printf.h": "c"
   },
   "cmake.configureOnOpen": true,
   "cortex-debug.variableUseNaturalFormat": false
