@@ -1,99 +1,60 @@
-#include <stm32f4xx.h>
+#include "devices/motor.h"
+#include "devices/logger.h"
+#include "drivers/stm32f446xx_tim.h"
 
-#include "drivers/stm32f446xx_uart.h"
-#include "drivers/stm32f446xx_gpio.h"
+inline void __delay_cycles(uint32_t cycles)
+{
+  while(--cycles) __asm("nop");
+}
 
-#include "printf.h"
+stm32f446xx_isr_t stm32f446xx_tim9_isr;
+stm32f446xx_tim_timer_t stm32f446xx_tim_9 = 
+{
+  .address = TIM9_BASE,
+  .isr = &stm32f446xx_tim9_isr,
+  .callback = 0
+};
 
-// void _putchar(char character)
-// {
-//   stm32f446xx_uart_write(UART_0, 
-//     (const uint8_t*)&character, 1);
-// }
+uint32_t left_motor_encoder = 0;
+uint32_t right_motor_encoder = 0;
 
-// static inline void __delay_cycles(uint32_t cycles)
-// {
-//   while(--cycles) __ASM("nop");
-// }
+void systick_control(void)
+{
+  /* Read motor encoder values */
+  left_motor_encoder = motor_left_position();
+  right_motor_encoder = motor_right_position();
 
-// void hardware_init(void)
-// {
-//   /* Initialize USART2 */
-//   stm32f446xx_gpio_config_t stm32f446xx_usart2_gpio_config = {0};
-//   stm32f446xx_usart2_gpio_config.mode = GPIO_MODE_ALTERNATE;
-//   stm32f446xx_usart2_gpio_config.alt = GPIO_ALT_7;
+  /* Update system control */
 
-//   stm32f446xx_gpio_init(GPIOA_BASE,
-//     GPIO_PIN_2 | GPIO_PIN_3, 
-//     &stm32f446xx_usart2_gpio_config);
-
-//   stm32f446xx_usart_config_t stm32f446xx_usart2_config = {0};
-//   stm32f446xx_usart2_config.baudrate = 9600;
-//   stm32f446xx_usart2_config.irqn = USART2_IRQn;
-
-//   stm32f446xx_uart_init(UART_0, &stm32f446xx_usart2_config);
-
-//   /* Initialize PWM */
-//   stm32f446xx_gpio_config_t stm32f446xx_pwm_gpio_config = {0};
-//   stm32f446xx_pwm_gpio_config.mode = GPIO_MODE_ALTERNATE;
-//   stm32f446xx_pwm_gpio_config.alt = GPIO_ALT_2;
-
-//   stm32f446xx_gpio_init(GPIOA_BASE,
-//     GPIO_PIN_6 | GPIO_PIN_7,
-//     &stm32f446xx_pwm_gpio_config);
-
-//   stm32f446xx_gpio_init(GPIOB_BASE,
-//     GPIO_PIN_6 | GPIO_PIN_7,
-//     &stm32f446xx_pwm_gpio_config);
-
-//   stm32f446xx_tim_pwm_config_t stm32f446xx_tim_pwm_config = {0};
-//   stm32f446xx_tim_pwm_config.pwm_mode = PWM_MODE_1;
-
-//   stm32f446xx_tim_pwm_init(TIM3_BASE, 
-//     TIM_CC_1, 
-//     &stm32f446xx_tim_pwm_config);
-//   stm32f446xx_tim_pwm_init(TIM3_BASE, 
-//     TIM_CC_2, 
-//     &stm32f446xx_tim_pwm_config);
-//   stm32f446xx_tim_pwm_init(TIM4_BASE, 
-//     TIM_CC_1, 
-//     &stm32f446xx_tim_pwm_config);
-//   stm32f446xx_tim_pwm_init(TIM4_BASE, 
-//     TIM_CC_2, 
-//     &stm32f446xx_tim_pwm_config);
-
-//   /* Initialize encoders */
-//   stm32f446xx_gpio_config_t stm32f446xx_enc_0_gpio_config = {0};
-//   stm32f446xx_enc_0_gpio_config.mode = GPIO_MODE_ALTERNATE;
-//   stm32f446xx_enc_0_gpio_config.alt = GPIO_ALT_1;
-
-//   stm32f446xx_gpio_config_t stm32f446xx_enc_1_gpio_config = {0};
-//   stm32f446xx_enc_1_gpio_config.mode = GPIO_MODE_ALTERNATE;
-//   stm32f446xx_enc_1_gpio_config.alt = GPIO_ALT_2;
-  
-//   stm32f446xx_gpio_init(GPIOB_BASE,
-//     GPIO_PIN_8 | GPIO_PIN_9,
-//     &stm32f446xx_enc_0_gpio_config);
-
-//   stm32f446xx_gpio_init(GPIOA_BASE,
-//     GPIO_PIN_0 | GPIO_PIN_1,
-//     &stm32f446xx_enc_1_gpio_config);
-
-//   stm32f446xx_tim_enc_init(TIM2_BASE, 0);
-//   stm32f446xx_tim_enc_init(TIM5_BASE, 0);
-
-//   /*Initialize GPIO outputs/inputs*/
-
-//   /*Initialize ADC*/
-
-//   /*Initialize I2C*/
-// }
+  /* Set motor output */
+}
 
 int main(void)
 {
+  /* Initialize motors */
+  left_motor_init();
+  motor_right_init();
+
+  /* Initialize logger */
+  logger_init();
+
+  /* Initialize systems control SysTick*/
+  stm32f446xx_tim_timer_config_t stm32f446xx_timer_9_config = 
+  {
+    .callback = 0,
+    .frequency = 500,
+    .irq = TIM1_BRK_TIM9_IRQn
+  };
+
+  stm32f446xx_tim_timer_init(&stm32f446xx_tim_9, 
+    &stm32f446xx_timer_9_config);
+
   while(1)
   {
-    //printf("Hello world, plus counting %i\r\n", index++);
-  
+    /* Print variables every 100ms */
+    logger_printf(0, "%i\t%i", 
+      left_motor_encoder, 
+      right_motor_encoder);
+    __delay_cycles(160000);
   }
 }

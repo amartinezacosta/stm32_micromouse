@@ -64,8 +64,8 @@ void logger_printf(uint32_t level,
   va_list valist;
   va_start(valist, fstr);
   printf("%s%s: \x1B[0m", 
-    levels[level],
-    colors[level]);
+    colors[level],
+    levels[level]);
   printf(fstr, valist);
   printf("\r\n");
   va_end(valist);

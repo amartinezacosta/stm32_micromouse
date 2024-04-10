@@ -143,13 +143,3 @@ void stm32f446_tim_timer_handler(void *args)
     TIM_CMSIS(self->address)->SR &= TIM_SR_UIF;
   }
 }
-
-stm32f446xx_isr_t stm32f446xx_tim9_isr;
-stm32f446xx_tim_timer_t stm32f446xx_tim_9 = 
-{
-  .address = TIM9_BASE,
-  .isr = &stm32f446xx_tim9_isr,
-  .callback = 0
-};
-
-stm32f446xx_tim_timer_t * const TIMER_0 = &stm32f446xx_tim_9;
