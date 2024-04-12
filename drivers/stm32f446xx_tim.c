@@ -140,6 +140,6 @@ void stm32f446_tim_timer_handler(void *args)
     {
       self->callback();
     }
-    TIM_CMSIS(self->address)->SR &= TIM_SR_UIF;
+    TIM_CMSIS(self->address)->SR &= ~TIM_SR_UIF;
   }
 }

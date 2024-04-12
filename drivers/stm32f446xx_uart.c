@@ -1,6 +1,6 @@
 #include "drivers/stm32f446xx_uart.h"
 
-void stm32f446_usart_handler(void *args);
+void stm32f446xx_usart_handler(void *args);
 
 void stm32f446xx_uart_init(stm32f446xx_usart_t * const self,
   stm32f446xx_usart_config_t *config)
@@ -24,7 +24,7 @@ void stm32f446xx_uart_init(stm32f446xx_usart_t * const self,
     self->rx_buffer_length);
 
   /*Register ISR event*/
-  stm32f446xx_isr_register(self->isr, stm32f446_usart_handler,
+  stm32f446xx_isr_register(self->isr, stm32f446xx_usart_handler,
     self, config->irqn);
 }
 
@@ -79,7 +79,7 @@ uint32_t stm32f446xx_uart_read(stm32f446xx_usart_t * const self,
   return 0;
 }
 
-void stm32f446_usart_handler(void *args)
+void stm32f446xx_usart_handler(void *args)
 {
   stm32f446xx_usart_t *self = (stm32f446xx_usart_t*)args;
   uint32_t status = USART_CMSIS(self->address)->SR;

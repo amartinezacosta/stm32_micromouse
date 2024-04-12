@@ -2,7 +2,7 @@
 #include "devices/logger.h"
 #include "drivers/stm32f446xx_tim.h"
 
-inline void __delay_cycles(uint32_t cycles)
+void __delay_cycles(uint32_t cycles)
 {
   while(--cycles) __asm("nop");
 }
@@ -20,13 +20,11 @@ uint32_t right_motor_encoder = 0;
 
 void systick_control(void)
 {
-  /* Read motor encoder values */
+  /* Update system variables */
   left_motor_encoder = motor_left_position();
   right_motor_encoder = motor_right_position();
 
-  /* Update system control */
-
-  /* Set motor output */
+  /* Wake up task for motor control */
 }
 
 int main(void)
@@ -41,7 +39,7 @@ int main(void)
   /* Initialize systems control SysTick*/
   stm32f446xx_tim_timer_config_t stm32f446xx_timer_9_config = 
   {
-    .callback = 0,
+    .callback = &systick_control,
     .frequency = 500,
     .irq = TIM1_BRK_TIM9_IRQn
   };
@@ -52,7 +50,7 @@ int main(void)
   while(1)
   {
     /* Print variables every 100ms */
-    logger_printf(0, "%i\t%i", 
+    logger_printf(0, "%i,%i", 
       left_motor_encoder, 
       right_motor_encoder);
     __delay_cycles(160000);

@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include <stm32f4xx.h>
 
-#include "stm32f446xx_isr.h"
-#include "ringbuffer.h"
+#include "drivers/stm32f446xx_isr.h"
+#include "drivers/ringbuffer.h"
 
 #define STM32F466XX_USART2_TX_BUFFER_SIZE     128
 #define STM32F466XX_USART2_RX_BUFFER_SIZE     128

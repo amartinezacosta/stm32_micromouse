@@ -1,5 +1,5 @@
 #include <stm32f4xx.h>
-#include "stm32f446xx_isr.h"
+#include "drivers/stm32f446xx_isr.h"
 
 extern void main(void);
 extern void SystemInit(void);
@@ -232,7 +232,7 @@ __VECTOR_TABLE_ATTRIBUTE void(*__VECTOR_TABLE[])(void) =
 __NO_RETURN void Reset_Handler(void)
 {
   /*Intialize board*/
-  //SystemInit();
+  SystemInit();
 
   /*Initialize data and bss sections*/
   extern uint32_t __etext,__data_start__,__data_end__;

@@ -28,68 +28,54 @@
 #define GPIO_HIGH               1UL
 
 /*Output port mode */
-typedef enum
-{
-  GPIO_MODE_INPUT = 0,
-  GPIO_MODE_OUTPUT,
-  GPIO_MODE_ALTERNATE,
-  GPIO_MODE_ANALOG
-}gpio_mode_t;
+#define GPIO_MODE_INPUT         0UL
+#define GPIO_MODE_OUTPUT        1UL
+#define GPIO_MODE_ALTERNATE     2UL
+#define GPIO_MODE_ANALOG        3UL
 
 /*Output output type*/
-typedef enum
-{
-  GPIO_OUTPUT_TYPE_PP = 0,
-  GPIO_OUTPUT_TYPE_OD
-}gpio_otype_t;
+#define  GPIO_OUTPUT_TYPE_PP    0UL
+#define GPIO_OUTPUT_TYPE_OD     1UL
 
 /*Output speed*/
-typedef enum
-{
-  GPIO_SPEED_LOW = 0,
-  GPIO_SPEED_MEDIUM,
-  GPIO_SPEED_FAST,
-  GPIO_SPEED_HIGH
-}gpio_ospeed_t;
+#define GPIO_SPEED_LOW          0UL
+#define GPIO_SPEED_MEDIUM       1UL
+#define GPIO_SPEED_FAST         2UL
+#define GPIO_SPEED_HIGH         3UL
 
 /*Pull-up, pull-down*/
-typedef enum
-{
-  GPIO_PULL_DISABLE,
-  GPIO_PULL_UP,
-  GPIO_PULL_DOWN
-}gpio_pull_t;
+#define GPIO_PULL_DISABLE       0UL
+#define GPIO_PULL_UP            1UL
+#define GPIO_PULL_DOWN          2UL
 
 /*Alternate function*/
-typedef enum
-{
-  GPIO_ALT_0 = 0,
-  GPIO_ALT_1,
-  GPIO_ALT_2,
-  GPIO_ALT_3,
-  GPIO_ALT_4,
-  GPIO_ALT_5,
-  GPIO_ALT_6,
-  GPIO_ALT_7,
-  GPIO_ALT_8,
-  GPIO_ALT_9,
-  GPIO_ALT_10,
-  GPIO_ALT_11,
-  GPIO_ALT_12,
-  GPIO_ALT_13,
-  GPIO_ALT_14,
-  GPIO_ALT_15
-}gpio_alt_t;
+#define GPIO_ALT_0              0UL
+#define GPIO_ALT_1              1UL
+#define GPIO_ALT_2              2UL
+#define GPIO_ALT_3              3UL
+#define GPIO_ALT_4              4UL
+#define GPIO_ALT_5              5UL
+#define GPIO_ALT_6              6UL
+#define GPIO_ALT_7              7UL
+#define GPIO_ALT_8              8UL
+#define GPIO_ALT_9              9UL
+#define GPIO_ALT_10             10UL
+#define GPIO_ALT_11             11UL
+#define GPIO_ALT_12             12UL
+#define GPIO_ALT_13             13UL
+#define GPIO_ALT_14             14UL
+#define GPIO_ALT_15             15UL
+
 
 #define GPIO_CMSIS(address)   ((GPIO_TypeDef*)address)
 
 typedef struct
 {
-  gpio_mode_t mode;
-  gpio_otype_t otype;
-  gpio_ospeed_t ospeed;
-  gpio_pull_t pull;
-  gpio_alt_t alt;
+  uint32_t mode;
+  uint32_t otype;
+  uint32_t ospeed;
+  uint32_t pull;
+  uint32_t alt;
 }stm32f446xx_gpio_config_t;
 
 void stm32f446xx_gpio_init(const uint32_t address,
