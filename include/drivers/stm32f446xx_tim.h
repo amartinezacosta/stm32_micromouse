@@ -64,7 +64,6 @@ typedef struct
 {
   uint32_t frequency;
   IRQn_Type irq;
-  void(*callback)(void);
 }stm32f446xx_tim_timer_config_t;
 
 extern stm32f446xx_tim_timer_t * const TIMER_0;

@@ -98,7 +98,7 @@ void stm32f446xx_tim_enc_init(uint32_t const address,
   TIM_CMSIS(address)->SMCR |= (3UL << TIM_SMCR_SMS_Pos);
   /* Set CC1 to input TI1, and CC2 to input TI2*/
   TIM_CMSIS(address)->CCMR1 |= (TIM_CCMR1_CC1S_0 |
-                                      TIM_CCMR1_CC2S_0);
+                                TIM_CCMR1_CC2S_0);
   /* Select TI1 and TI2 polarity */
   /* TODO: Add polarity interface */
   TIM_CMSIS(address)->CCER |= TIM_CCER_CC1P;
@@ -116,8 +116,6 @@ uint32_t stm32f446xx_tim_enc_count(uint32_t const address)
 void stm32f446xx_tim_timer_init(stm32f446xx_tim_timer_t * const self,
   stm32f446xx_tim_timer_config_t const * const config)
 {
-  self->callback = config->callback;
-
   /* Set timer frequency */
   TIM_CMSIS(self->address)->ARR = (SystemCoreClock / config->frequency) - 1;
   /*Enable UIE interrutpt*/
