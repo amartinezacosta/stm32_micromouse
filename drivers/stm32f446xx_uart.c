@@ -25,7 +25,7 @@ void stm32f446xx_uart_init(stm32f446xx_usart_t * const self,
 
   /*Register ISR event*/
   stm32f446xx_isr_register(self->isr, stm32f446xx_usart_handler,
-    self, config->irqn);
+    self, config->irqn, config->prio);
 }
 
 uint32_t stm32f446xx_uart_write(stm32f446xx_usart_t * const self, 

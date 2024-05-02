@@ -6,6 +6,8 @@ ARM_GCC_BIN_DIR = $(ARM_GCC_ROOT_DIR)/bin
 CMSIS_INCLUDE_DIR = $(CMSIS_ROOT_DIR)/CMSIS/Core/Include
 STM32F4XX_CMSIS_INCLUDE_DIR = $(STM32_CMSIS_ROOT_DIR)/stm32f4xx/Include
 PRINTF_INCLUDE_DIR = ./third_party/printf
+FREERTOS_KERNEL_INCLUDE_DIR = ./third_party/FreeRTOS-Kernel/include
+FREERTOS_KERNEL_PORT_INCLUDE_DIR = ./third_party/FreeRTOS-Kernel/portable/GCC/ARM_CM4F
 
 # Project constants
 PROJECT_NAME = micromouse
@@ -17,7 +19,9 @@ BIN_DIR = $(BUILD_DIR)/bin
 INCLUDE_DIRS = include \
 							 $(CMSIS_INCLUDE_DIR) \
 							 $(STM32F4XX_CMSIS_INCLUDE_DIR) \
-							 $(PRINTF_INCLUDE_DIR)
+							 $(PRINTF_INCLUDE_DIR) \
+							 $(FREERTOS_KERNEL_INCLUDE_DIR) \
+							 $(FREERTOS_KERNEL_PORT_INCLUDE_DIR)
 
 # Compiler
 CC = $(ARM_GCC_BIN_DIR)/arm-none-eabi-gcc
@@ -37,8 +41,15 @@ DRIVERS_SOURCES = drivers/stm32f446xx_gpio.c 	\
 DEVICES_SOURCES = devices/led.c	\
 									devices/logger.c \
 									devices/motor.c
-THIRD_PARTY_SOURCES = third_party/printf/printf.c									 				
+THIRD_PARTY_SOURCES = third_party/printf/printf.c \
+											third_party/FreeRTOS-Kernel/tasks.c \
+											third_party/FreeRTOS-Kernel/list.c \
+											third_party/FreeRTOS-Kernel/queue.c \
+											third_party/FreeRTOS-Kernel/portable/GCC/ARM_CM4F/port.c \
+											third_party/FreeRTOS-Kernel/portable/MemMang/heap_4.c
+
 SOURCES = main.c \
+					motor_control.c \
 					stm32f446xx_startup_gcc.c \
 					stm32f446xx_system.c \
 					$(DRIVERS_SOURCES) \

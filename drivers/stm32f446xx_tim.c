@@ -125,7 +125,7 @@ void stm32f446xx_tim_timer_init(stm32f446xx_tim_timer_t * const self,
   
   /*Register ISR event*/
   stm32f446xx_isr_register(self->isr, stm32f446_tim_timer_handler,
-    self, config->irq);
+    self, config->irq, config->prio);
 }
 
 void stm32f446_tim_timer_handler(void *args)

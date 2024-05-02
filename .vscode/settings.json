@@ -11,7 +11,8 @@
     "stm32f446xx_gpio.h": "c",
     "motor.h": "c",
     "logger.h": "c",
-    "printf.h": "c"
+    "printf.h": "c",
+    "core_cm4.h": "c"
   },
   "cmake.configureOnOpen": true,
   "cortex-debug.variableUseNaturalFormat": false

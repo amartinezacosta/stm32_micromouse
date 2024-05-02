@@ -54,19 +54,20 @@ void logger_init(void)
   stm32f446xx_usart_config_t stm32f446xx_usart2_config = {0};
   stm32f446xx_usart2_config.baudrate = 9600;
   stm32f446xx_usart2_config.irqn = USART2_IRQn;
+  stm32f446xx_usart2_config.prio = 2;
 
   stm32f446xx_uart_init(&stm32f446xx_usart_2, &stm32f446xx_usart2_config);
 }
 
-void logger_printf(uint32_t level,
-  const char *fstr, ...)
-{
-  va_list valist;
-  va_start(valist, fstr);
-  printf("%s%s: \x1B[0m", 
-    colors[level],
-    levels[level]);
-  printf(fstr, valist);
-  printf("\r\n");
-  va_end(valist);
-}
+// void logger_printf(uint32_t level,
+//   const char *fstr, ...)
+// {
+//   va_list valist;
+//   va_start(valist, fstr);
+//   printf("%s%s: \x1B[0m", 
+//     colors[level],
+//     levels[level]);
+//   printf(fstr, valist);
+//   printf("\r\n");
+//   va_end(valist);
+// }

@@ -1,57 +1,56 @@
-#include "devices/motor.h"
+#include "FreeRTOS.h"
+#include "task.h"
+
 #include "devices/logger.h"
-#include "drivers/stm32f446xx_tim.h"
 #include "printf.h"
 
-void systick_control(void);
+extern TaskHandle_t xMotorControlTaskHandle;
+extern void vMotorControlTask(void *pvParameters);
 
-void __delay_cycles(uint32_t cycles)
+void vLoggerTask(void *pvParameters)
 {
-  while(--cycles) __asm("nop");
+  /* Initialize logger */
+  logger_init();
+
+  while(1)
+  {
+    printf("Hello World");
+    vTaskDelay(100/portTICK_PERIOD_MS);
+  }
 }
 
-stm32f446xx_isr_t stm32f446xx_tim9_isr;
-stm32f446xx_tim_timer_t stm32f446xx_tim_9 = 
+void vInitTask(void *pvParameters)
 {
-  .address = TIM9_BASE,
-  .isr = &stm32f446xx_tim9_isr,
-  .callback = &systick_control
-};
+  /* Initialize system tasks */
+  xTaskCreate(vMotorControlTask,
+    "MotorControlTask",
+    configMINIMAL_STACK_SIZE,
+    (void*)0,
+    tskIDLE_PRIORITY + 2,
+    xMotorControlTaskHandle);
 
-uint32_t left_motor_encoder = 0;
-uint32_t right_motor_encoder = 0;
+  xTaskCreate(vLoggerTask,
+    "LoggerTask",
+    configMINIMAL_STACK_SIZE,
+    (void*)0,
+    tskIDLE_PRIORITY + 1,
+    NULL);
 
-void systick_control(void)
-{
-  /* Update system variables */
-  left_motor_encoder = motor_left_position();
-  right_motor_encoder = motor_right_position();
-
-  /* Wake up task for motor control */
+  /* Delete this task */
+  vTaskDelete(NULL);
 }
 
 int main(void)
 {
-  /* Initialize motors */
-  left_motor_init();
-  motor_right_init();
+  xTaskCreate(vInitTask,
+    "InitTask",
+    configMINIMAL_STACK_SIZE,
+    (void*)0,
+    tskIDLE_PRIORITY,
+    NULL);
 
-  /* Initialize logger */
-  logger_init();
+  vTaskStartScheduler();
 
-  /* Initialize systems control SysTick*/
-  stm32f446xx_tim_timer_config_t stm32f446xx_timer_9_config = 
-  {
-    .frequency = 500,
-    .irq = TIM1_BRK_TIM9_IRQn
-  };
-
-  stm32f446xx_tim_timer_init(&stm32f446xx_tim_9, 
-    &stm32f446xx_timer_9_config);
-
-  while(1)
-  {
-    printf("%i,%i\r\n", left_motor_encoder, right_motor_encoder);
-    __delay_cycles(16000);
-  }
+  /* Should never reach this point*/
+  for(;;);
 }

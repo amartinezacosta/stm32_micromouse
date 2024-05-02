@@ -3,6 +3,9 @@
 
 extern void main(void);
 extern void SystemInit(void);
+extern void xPortSysTickHandler(void);
+extern void xPortPendSVHandler(void);
+extern void vPortSVCHandler(void);
 
 extern void __INITIAL_SP(void);
 __STATIC_FORCEINLINE void __initialize_data(uint32_t *origin, 
@@ -124,11 +127,11 @@ __VECTOR_TABLE_ATTRIBUTE void(*__VECTOR_TABLE[])(void) =
   0,                          /* -8 - Reserved*/
   0,                          /* -7 - Reserved*/
   0,                          /* -6 - Reserved*/
-  SVC_Handler,                /* -5 - SVC*/
+  vPortSVCHandler,            /* -5 - SVC*/
   DebugMon_Handler,           /* -4 - Debug Monitor*/
   0,                          /* -3 - Reserved*/
-  PenSV_Handler,              /* -2 - PendSV*/
-  SysTick_Handler,            /* -1 - SysTick*/
+  xPortPendSVHandler,         /* -2 - PendSV*/
+  xPortSysTickHandler,        /* -1 - SysTick*/
   /*STM32F446xx system interrupts */
   WWDG_Handler,               /*0 - WWDG*/
   PVD_Handler,                /*1 - PVD*/

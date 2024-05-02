@@ -26,6 +26,7 @@ typedef struct
 {
   uint32_t baudrate;
   IRQn_Type irqn;
+  uint32_t prio;
 }stm32f446xx_usart_config_t;
 
 extern stm32f446xx_usart_t * const UART_0;
