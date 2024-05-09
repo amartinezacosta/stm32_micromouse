@@ -8,7 +8,8 @@
                 "/home/amartinezacosta/cmsis-header-stm32/stm32f4xx/Include/",
                 "/home/amartinezacosta/CMSIS_5/CMSIS/Core/Include/",
                 "${workspaceFolder}/third_party/printf",
-                "${workspaceFolder}/third_party/FreeRTOS-Kernel/include"
+                "${workspaceFolder}/third_party/FreeRTOS-Kernel/include",
+                "${workspaceFolder}/third_party/FreeRTOS-Kernel/portable/GCC/ARM_CM4F"
             ],
             "defines": ["STM32F446xx"],
             "compilerPath": "/home/amartinezacosta/gcc-arm-none-eabi-10.3-2021.07/bin/arm-none-eabi-gcc",

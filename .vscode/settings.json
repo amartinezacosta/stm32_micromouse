@@ -12,7 +12,8 @@
     "motor.h": "c",
     "logger.h": "c",
     "printf.h": "c",
-    "core_cm4.h": "c"
+    "core_cm4.h": "c",
+    "micromouseconfig.h": "c"
   },
   "cmake.configureOnOpen": true,
   "cortex-debug.variableUseNaturalFormat": false
