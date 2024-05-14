@@ -13,7 +13,8 @@
     "logger.h": "c",
     "printf.h": "c",
     "core_cm4.h": "c",
-    "micromouseconfig.h": "c"
+    "micromouseconfig.h": "c",
+    "network_manager_task.h": "c"
   },
   "cmake.configureOnOpen": true,
   "cortex-debug.variableUseNaturalFormat": false

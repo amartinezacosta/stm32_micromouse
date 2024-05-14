@@ -12,8 +12,8 @@
 #define RIGHT_WHEEL_COUNTS_TO_MM  1.0
 
 /* System control config constants */
-#define SYSTICK_FREQUENCY         500
-#define SYSTICK_PERIOD            (1.0/SYSTICK_FREQUENCY)
+#define SENSOR_SYSTICK_FREQUENCY         500
+#define SENSOR_SYSTICK_PERIOD            (1.0/SYSTICK_FREQUENCY)
 
 #define FORWARD_KP                1.0
 #define FORWARD_KD                0.1
@@ -40,6 +40,7 @@
 #define TASK_TERMINAL_PERIOD_MS           (50U)
 #define TASK_APPLICATION_PERIOD_MS        (2U)
 
-#define TASK_SENSOR_INPUT_QUEUE_SIZE      (10U)
+#define TASK_SENSOR_RAW_MSG_QUEUE         (10U)
+#define TASK_SENSOR_MSG_QUEUE             (10U)
 
 #endif

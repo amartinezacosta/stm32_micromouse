@@ -1,6 +1,6 @@
 #include "drivers/stm32f446xx_tim.h"
 
-void stm32f446_tim_timer_handler(void *args);
+void stm32f446_tim_timer_handler(void(*callback)(void), uint32_t address);
 
 void stm32f446xx_tim_pwm_init(uint32_t const address, uint32_t const cc,
   stm32f446xx_tim_pwm_config_t const * const config)
@@ -113,31 +113,33 @@ uint32_t stm32f446xx_tim_enc_count(uint32_t const address)
   return count;
 }
 
-void stm32f446xx_tim_timer_init(stm32f446xx_tim_timer_t * const self,
+void stm32f446xx_tim_timer_init(uint32_t address,
+  void(*callback)(void),
   stm32f446xx_tim_timer_config_t const * const config)
 {
   /* Set timer frequency */
-  TIM_CMSIS(self->address)->ARR = (SystemCoreClock / config->frequency) - 1;
+  TIM_CMSIS(address)->ARR = (SystemCoreClock / config->frequency) - 1;
   /*Enable UIE interrutpt*/
-  TIM_CMSIS(self->address)->DIER |= TIM_DIER_UIE;
+  TIM_CMSIS(address)->DIER |= TIM_DIER_UIE;
   /*Enable counter*/
-  TIM_CMSIS(self->address)->CR1 |= TIM_CR1_CEN;
+  TIM_CMSIS(address)->CR1 |= TIM_CR1_CEN;
   
   /*Register ISR event*/
-  stm32f446xx_isr_register(self->isr, stm32f446_tim_timer_handler,
-    self, config->irq, config->prio);
+  stm32f446xx_isr_register(stm32f446_tim_timer_handler,
+    callback, 
+    address,
+    config->irq, 
+    config->prio);
 }
 
-void stm32f446_tim_timer_handler(void *args)
+void stm32f446_tim_timer_handler(void(*callback)(void), uint32_t address)
 {
-  stm32f446xx_tim_timer_t *self = (stm32f446xx_tim_timer_t*)args;
-
-  if(TIM_CMSIS(self->address)->SR & TIM_SR_UIF)
+  if(TIM_CMSIS(address)->SR & TIM_SR_UIF)
   {
-    if(self->callback)
+    if(callback)
     {
-      self->callback();
+      callback();
     }
-    TIM_CMSIS(self->address)->SR &= ~TIM_SR_UIF;
+    TIM_CMSIS(address)->SR &= ~TIM_SR_UIF;
   }
 }

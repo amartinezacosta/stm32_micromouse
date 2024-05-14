@@ -2,12 +2,14 @@
 #include "task.h"
 
 #include "MicromouseConfig.h"
+#include "sensor_input_task.h"
+#include "network_manager_task.h"
 
-#include "devices/logger.h"
-#include "printf.h"
+// #include "devices/logger.h"
+// #include "printf.h"
 
-void vSensorInputTask(void *pvParameters){while(1);}
-void vNetworkManagerTask(void *pvParameters){while(1);}
+
+// void vSensorInputTask(void *pvParameters){while(1);}
 void vTerminalTask(void *pvParameters){while(1);}
 void vApplicationTask(void *pvParameters){while(1);}
 
@@ -28,7 +30,7 @@ TaskInitParams_t TaskInitParams[] =
   {vApplicationTask,"ApplicationTask",TASK_SENSOR_INPUT_STACK_SIZE, NULL, TASK_SENSOR_INPUT_PRIORITY},
 };
 
-const uint32_t TaskInitCount = sizeof(TaskInitParams)/sizeof(TaskInitParams_t);
+const uint32_t TaskInitParamsCount = sizeof(TaskInitParams) / sizeof(TaskInitParams_t);
 
 // extern TaskHandle_t xMotorControlTaskHandle;
 // extern void vMotorControlTask(void *pvParameters);
@@ -48,7 +50,7 @@ const uint32_t TaskInitCount = sizeof(TaskInitParams)/sizeof(TaskInitParams_t);
 void vInitTask(void *pvParameters)
 {
   /* Initialize tasks */
-  for(uint32_t i = 0; i < TaskInitCount; i++)
+  for(uint32_t i = 0; i < TaskInitParamsCount; i++)
   {
     TaskInitParams_t *task = &TaskInitParams[i];
     xTaskCreate(task->TaskPtr,

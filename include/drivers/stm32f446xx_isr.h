@@ -8,16 +8,15 @@
 
 typedef struct
 {
-  void (*function)(void*);
-  void * args;
-  IRQn_Type irqn;
-  uint32_t prio;
+  void (*function)(void(*)(void),uint32_t);
+  void (*callback)(void);
+  uint32_t address;
 }stm32f446xx_isr_t;
 
 void stm32f446xx_isr_vtable_init(void);
-void stm32f446xx_isr_register(stm32f446xx_isr_t * const event,
-  void(*function)(void*), 
-  void *args, 
+void stm32f446xx_isr_register(void(*function)(void*), 
+  void (*callback)(void),
+  uint32_t address, 
   IRQn_Type irqn,
   uint32_t prio);
 
