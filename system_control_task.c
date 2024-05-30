@@ -5,12 +5,16 @@
 #include "MicromouseConfig.h"
 #include "drivers/stm32f446xx_tim.h"
 #include "devices/motor.h"
-#include "sensor_input_task.h"
+#include "motion_profile.h"
+#include "system_control_task.h"
+#include "system_msg_queue.h"
+#include "pid.h"
 
 QueueHandle_t xSensorRawMsgISRQueue;
-QueueHandle_t xSensorMsgQueue;
+motion_profile_t motion_profile;
+pid_t forward_control;
 
-void SensorSysTick(void)
+void vSensorSysTick(void)
 {
   BaseType_t xHigerPriorityTaskWoken = pdFALSE;
   sensor_raw_msg_t sensor_msg = {0};
@@ -24,7 +28,7 @@ void SensorSysTick(void)
   portYIELD_FROM_ISR(xHigerPriorityTaskWoken); 
 }
 
-void SensorSysTickInit(void)
+void vSensorSysTickInit(void)
 {
   /* Initialize sensor systick timer*/
   stm32f446xx_tim_timer_config_t stm32f446xx_timer_9_config;
@@ -33,11 +37,11 @@ void SensorSysTickInit(void)
   stm32f446xx_timer_9_config.prio = 1;
 
   stm32f446xx_tim_timer_init(TIM9_BASE,
-    SensorSysTick, 
+    vSensorSysTick, 
     &stm32f446xx_timer_9_config);
 }
 
-float SensorInputPosition(float encoder_left, float encoder_right)
+float fSensorInputPosition(float encoder_left, float encoder_right)
 {
   float left_encoder_mm = encoder_left * LEFT_WHEEL_COUNTS_TO_MM;
   float right_encoder_mm = encoder_right * RIGHT_WHEEL_COUNTS_TO_MM;
@@ -46,7 +50,7 @@ float SensorInputPosition(float encoder_left, float encoder_right)
   return position;
 }
 
-void vSensorInputTask(void *pvParameters)
+void vSystemControlTask(void *pvParameters)
 {
   /* Initialize sensor's peripheral hardware */
   // left_motor_init();
@@ -56,25 +60,45 @@ void vSensorInputTask(void *pvParameters)
   xSensorRawMsgISRQueue = xQueueCreate(TASK_SENSOR_RAW_MSG_QUEUE, 
     sizeof(sensor_raw_msg_t));
 
-  /* Create sensor msg queue*/
-  xSensorMsgQueue = xQueueCreate(TASK_SENSOR_MSG_QUEUE,
-    sizeof(sensor_msg_t));
+  vSensorSysTickInit();
+  motion_profile_start(&motion_profile,
+    200.0,
+    0.0,
+    MAZE_CELL_CENTER_DISTANCE,
+    FORWARD_ACCELERATION);
 
-  SensorSysTickInit();
+  pid_init(&forward_control, 
+    FORWARD_CONTROL_KP, 
+    FORWARD_CONTROL_KI,
+    FORWARD_CONTROL_KD,
+    FORWARD_CONTROL_INTEGRAL_MAX,
+    SENSOR_SYSTICK_PERIOD,
+    FORWARD_CONTROL_MAX_OUTPUT,
+    FORWARD_CONTROL_MIN_OUTPUT);
 
   while(1)
   {
     sensor_raw_msg_t sensor_raw_msg = {0};
-    sensor_msg_t sensor_msg = {0};
+    // sensor_msg_t sensor_msg = {0};
     
+    /*Receive sensor raw msg from timer ISR*/
     xQueueReceive(xSensorRawMsgISRQueue,
       &sensor_raw_msg,
       portMAX_DELAY);
 
-    /* Process variable and send it to the application */
-    sensor_msg.position = SensorInputPosition(sensor_raw_msg.left_encoder,
+    /*1. Process variable for state machine */
+    float actual_position = fSensorInputPosition(sensor_raw_msg.left_encoder,
       sensor_raw_msg.right_encoder);
 
-    /* Send sensor msg to queue */
+    /*2. Update motion profile position */
+    float profile_position = motion_profile_update(&motion_profile);
+
+    /*3. PID system control */
+    pid_update_setpoint(&forward_control, profile_position);
+    float control = pid_update(&forward_control, actual_position);
+
+    /*4. Update motor output */
+
+    /*5. Publish sensor values to other tasks */
   }
 }

@@ -21,7 +21,7 @@ float motion_profile_update(motion_profile_t * const self)
   switch(self->state)
   {
     case ACCELERATING:
-    self->velocity = self->acceleration*SYSTICK_PERIOD;
+    self->velocity += self->acceleration*SENSOR_SYSTICK_PERIOD;
     if(self->velocity > self->target_velocity)
     {
       self->velocity = self->target_velocity;
@@ -29,21 +29,30 @@ float motion_profile_update(motion_profile_t * const self)
     }
     break;
     case CRUISING:
-    float position_delta = self->target_position - self->position;
-    float brake_distance = motion_profile_decelerate_distance(self->velocity,
-      self->final_velocity);
-    if(position_delta < brake_distance)
     {
-
+      float position_delta = self->target_position - self->position;
+      float brake_distance = motion_profile_decelerate_distance(self->velocity,
+        self->final_velocity);
+      if(position_delta < brake_distance)
+      {
+        self->state = DECELERATING;
+      }
     }
     break;
     case DECELERATING:
+    self->velocity -= self->acceleration*SENSOR_SYSTICK_PERIOD;
+    if(self->velocity < 0.0)
+    {
+      self->velocity = 0.0;
+      self->state = FINISHED;
+    }
     break;
     case FINISHED:
+      return MAZE_CELL_CENTER_DISTANCE;
     break;
   }
 
-  self->position += self->velocity*SYSTICK_PERIOD;
+  self->position += self->velocity*SENSOR_SYSTICK_PERIOD;
   return self->position;
 }
 

@@ -49,9 +49,11 @@ THIRD_PARTY_SOURCES = third_party/printf/printf.c \
 											third_party/FreeRTOS-Kernel/portable/MemMang/heap_4.c
 
 SOURCES = main.c \
-					sensor_input_task.c \
+					system_control_task.c \
 					network_manager_task.c \
 					system_msg_queue.c	\
+					motion_profile.c \
+					pid.c	\
 					stm32f446xx_startup_gcc.c \
 					stm32f446xx_system.c \
 					$(DRIVERS_SOURCES) \

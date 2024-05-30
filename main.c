@@ -2,16 +2,10 @@
 #include "task.h"
 
 #include "MicromouseConfig.h"
-#include "sensor_input_task.h"
+#include "system_msg_queue.h"
+#include "system_control_task.h"
 #include "network_manager_task.h"
-
-// #include "devices/logger.h"
-// #include "printf.h"
-
-
-// void vSensorInputTask(void *pvParameters){while(1);}
-void vTerminalTask(void *pvParameters){while(1);}
-void vApplicationTask(void *pvParameters){while(1);}
+#include "terminal_task.c"
 
 typedef struct
 {
@@ -24,31 +18,17 @@ typedef struct
 
 TaskInitParams_t TaskInitParams[] =
 {
-  {vSensorInputTask,"SensorInputTask",TASK_SENSOR_INPUT_STACK_SIZE, NULL, TASK_SENSOR_INPUT_PRIORITY},
-  {vNetworkManagerTask,"NetworkManagerTask",TASK_NETWORK_MANAGER_STACK_SIZE, NULL, TASK_NETWORK_MANAGER_PRIORITY},
-  {vTerminalTask,"TerminalTask",TASK_TERMINAL_STACK_SIZE, NULL, TASK_TERMINAL_PRIORITY},
-  {vApplicationTask,"ApplicationTask",TASK_SENSOR_INPUT_STACK_SIZE, NULL, TASK_SENSOR_INPUT_PRIORITY},
+  {vSystemControlTask,  "SystemControlTask",  TASK_SYSTEM_CONTROL_STACK_SIZE, NULL, TASK_SYSTEM_CONTROL_PRIORITY},
+  {vNetworkManagerTask, "NetworkManagerTask", TASK_NETWORK_MANAGER_STACK_SIZE, NULL, TASK_NETWORK_MANAGER_PRIORITY},
+  {vTerminalTask,       "TerminalTask",       TASK_TERMINAL_STACK_SIZE, NULL, TASK_TERMINAL_PRIORITY},
 };
-
 const uint32_t TaskInitParamsCount = sizeof(TaskInitParams) / sizeof(TaskInitParams_t);
-
-// extern TaskHandle_t xMotorControlTaskHandle;
-// extern void vMotorControlTask(void *pvParameters);
-
-// void vLoggerTask(void *pvParameters)
-// {
-//   /* Initialize logger */
-//   logger_init();
-
-//   while(1)
-//   {
-//     printf("Hello World");
-//     vTaskDelay(100/portTICK_PERIOD_MS);
-//   }
-// }
 
 void vInitTask(void *pvParameters)
 {
+  /* Initialize system queues */
+  vSensorMsgQueueInit();
+
   /* Initialize tasks */
   for(uint32_t i = 0; i < TaskInitParamsCount; i++)
   {
