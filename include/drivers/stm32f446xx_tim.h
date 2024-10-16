@@ -67,14 +67,14 @@ typedef struct
   uint32_t prio;
 }stm32f446xx_tim_timer_config_t;
 
-extern stm32f446xx_tim_timer_t * const TIMER_0;
+typedef void(*tim_timer_callback_t)(void);
 
 void stm32f446xx_tim_pwm_init(uint32_t const address, uint32_t const cc,
   stm32f446xx_tim_pwm_config_t const * const config);
 void stm32f446xx_tim_enc_init(uint32_t const address,
   stm32f446xx_tim_enc_config_t const * const config);
 void stm32f446xx_tim_timer_init(uint32_t const address,
-  void(*callback)(void),
+  tim_timer_callback_t callback,
   stm32f446xx_tim_timer_config_t const * const config);
 uint32_t stm32f446xx_tim_pwm_frequency(uint32_t address);
 void stm32f446xx_tim_pwm_duty(uint32_t const address, 

@@ -1,6 +1,6 @@
 #include "drivers/stm32f446xx_tim.h"
 
-void stm32f446_tim_timer_handler(void(*callback)(void), uint32_t address);
+static void stm32f446_tim_timer_handler(void *args, uint32_t address);
 
 void stm32f446xx_tim_pwm_init(uint32_t const address, uint32_t const cc,
   stm32f446xx_tim_pwm_config_t const * const config)
@@ -91,6 +91,8 @@ uint32_t stm32f446xx_tim_pwm_frequency(uint32_t const address)
 void stm32f446xx_tim_enc_init(uint32_t const address,
   stm32f446xx_tim_enc_config_t const * const config)
 {
+  (void)config;
+
   /* Enable counter */
   TIM_CMSIS(address)->CR1 |= TIM_CR1_CEN;
 
@@ -113,8 +115,8 @@ uint32_t stm32f446xx_tim_enc_count(uint32_t const address)
   return count;
 }
 
-void stm32f446xx_tim_timer_init(uint32_t address,
-  void(*callback)(void),
+void stm32f446xx_tim_timer_init(uint32_t const address,
+  tim_timer_callback_t callback,
   stm32f446xx_tim_timer_config_t const * const config)
 {
   /* Set timer frequency */
@@ -132,8 +134,10 @@ void stm32f446xx_tim_timer_init(uint32_t address,
     config->prio);
 }
 
-void stm32f446_tim_timer_handler(void(*callback)(void), uint32_t address)
+static void stm32f446_tim_timer_handler(void *args, uint32_t address)
 {
+  tim_timer_callback_t callback = (tim_timer_callback_t)args;
+
   if(TIM_CMSIS(address)->SR & TIM_SR_UIF)
   {
     if(callback)

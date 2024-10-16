@@ -28,11 +28,14 @@ CC = $(ARM_GCC_BIN_DIR)/arm-none-eabi-gcc
 
 # GCC utilities
 OBJ_COPY = $(ARM_GCC_BIN_DIR)/arm-none-eabi-objcopy
+OBJ_DUMP = $(ARM_GCC_BIN_DIR)/arm-none-eabi-objdump
 
 # NOTE: TARGET and SOURCES must be changed accordingly
 TARGET = $(BIN_DIR)/$(PROJECT_NAME)
 TARGET_ELF = $(TARGET).elf
 TARGET_BIN = $(TARGET).bin
+TARGET_MAP = $(TARGET).map
+TARGET_LIST = $(TARGET).list
 DRIVERS_SOURCES = drivers/stm32f446xx_gpio.c 	\
 									drivers/stm32f446xx_tim.c 	\
 									drivers/stm32f446xx_uart.c 	\
@@ -40,7 +43,8 @@ DRIVERS_SOURCES = drivers/stm32f446xx_gpio.c 	\
 									drivers/ringbuffer.c
 DEVICES_SOURCES = devices/led.c	\
 									devices/logger.c \
-									devices/motor.c
+									devices/motor.c	\
+									devices/encoder.c
 THIRD_PARTY_SOURCES = third_party/printf/printf.c \
 											third_party/FreeRTOS-Kernel/tasks.c \
 											third_party/FreeRTOS-Kernel/list.c \
@@ -51,7 +55,7 @@ THIRD_PARTY_SOURCES = third_party/printf/printf.c \
 SOURCES = main.c \
 					system_control_task.c \
 					network_manager_task.c \
-					system_msg_queue.c	\
+					terminal_task.c \
 					motion_profile.c \
 					pid.c	\
 					stm32f446xx_startup_gcc.c \
@@ -68,12 +72,13 @@ WFLAGS = -Wall -Wextra -Wshadow
 CFLAGS = $(WFLAGS) $(addprefix -I, $(INCLUDE_DIRS)) -ggdb -O0 -D$(MCU) \
 				 -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16
 LDFLAGS = -Tstm32f446xx.ld -mfloat-abi=hard -mfpu=fpv4-sp-d16 -mcpu=cortex-m4 \
-					-nostartfiles -specs nano.specs
+					-nostartfiles -specs nano.specs -Wl,-Map=$(TARGET_MAP)
 
 # Linking
 $(TARGET_ELF): $(OBJECTS)
 	@mkdir -p $(dir $@)
 	$(CC) $(LDFLAGS) $^ -o $@
+	$(OBJ_DUMP) -d $@ > $(TARGET_LIST)
 
 # Compiling
 $(OBJ_DIR)/%.o:%.c

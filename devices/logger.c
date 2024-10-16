@@ -4,8 +4,6 @@
 #include "printf.h"
 #include <stdarg.h>
 
-stm32f446xx_isr_t stm32f446xx_usart2_isr;
-
 uint8_t stm32f446xx_usart2_tx_buffer[STM32F466XX_USART2_TX_BUFFER_SIZE];
 uint8_t stm32f446xx_usart2_rx_buffer[STM32F466XX_USART2_RX_BUFFER_SIZE];
 
@@ -20,8 +18,7 @@ stm32f446xx_usart_t stm32f446xx_usart_2 =
   .tx_buffer = &stm32f446xx_usart2_tx_buffer[0],
   .rx_buffer = &stm32f446xx_usart2_rx_buffer[0],
   .tx_buffer_length = STM32F466XX_USART2_TX_BUFFER_SIZE,
-  .rx_buffer_length = STM32F466XX_USART2_RX_BUFFER_SIZE,
-  .isr = &stm32f446xx_usart2_isr
+  .rx_buffer_length = STM32F466XX_USART2_RX_BUFFER_SIZE
 };
 
 static const char *levels[] = 

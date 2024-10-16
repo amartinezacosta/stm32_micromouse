@@ -19,7 +19,6 @@ typedef struct
   uint8_t *rx_buffer;
   uint32_t tx_buffer_length;
   uint32_t rx_buffer_length;
-  stm32f446xx_isr_t *isr;
 }stm32f446xx_usart_t;
 
 typedef struct

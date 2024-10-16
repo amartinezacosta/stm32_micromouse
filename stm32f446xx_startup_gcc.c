@@ -16,11 +16,11 @@ __STATIC_FORCEINLINE void __initialize_bss(uint32_t *start,
 
 /* ARM system interrupts */
 void Reset_Handler(void);
-void NMI_Handler(void)                  __attribute__((weak, alias("Default_Handler")));
-void HardFault_Handler(void)            __attribute__((weak, alias("Default_Handler")));
-void MemManage_Handler(void)            __attribute__((weak, alias("Default_Handler")));
-void BusFault_Handler(void)             __attribute__((weak, alias("Default_Handler")));
-void UsageFault_Handler(void)           __attribute__((weak, alias("Default_Handler")));
+void NMI_Handler(void);
+void HardFault_Handler(void);
+void MemManage_Handler(void);
+void BusFault_Handler(void);
+void UsageFault_Handler(void);
 void SVC_Handler(void)                  __attribute__((weak, alias("Default_Handler")));
 void DebugMon_Handler(void)             __attribute__((weak, alias("Default_Handler")));
 void PenSV_Handler(void)                __attribute__((weak, alias("Default_Handler")));
@@ -258,6 +258,46 @@ void Default_Handler(void)
   while(1)
   {
 
+  }
+}
+
+void NMI_Handler(void)
+{
+  while(1)
+  {
+
+  }
+}
+
+void HardFault_Handler(void)
+{
+  while(1)
+  {
+    
+  }
+}
+
+void MemManage_Handler(void)
+{
+  while(1)
+  {
+    
+  }
+}
+
+void BusFault_Handler(void)
+{
+  while(1)
+  {
+    
+  }
+}
+
+void UsageFault_Handler(void)
+{
+  while(1)
+  {
+    
   }
 }
 

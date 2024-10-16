@@ -16,7 +16,8 @@
     "micromouseconfig.h": "c",
     "network_manager_task.h": "c",
     "system_control_task.h": "c",
-    "pid.h": "c"
+    "pid.h": "c",
+    "encoder.h": "c"
   },
   "cmake.configureOnOpen": true,
   "cortex-debug.variableUseNaturalFormat": false

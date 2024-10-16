@@ -10,6 +10,7 @@
 #define GYROSCOPE_AXIS_COUNT      3
 #define LEFT_WHEEL_COUNTS_TO_MM   1.0
 #define RIGHT_WHEEL_COUNTS_TO_MM  1.0
+#define MOTOR_MAX_PWM             1.0
 
 /* Sensor systick constanst*/
 #define SENSOR_SYSTICK_FREQUENCY         500

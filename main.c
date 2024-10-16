@@ -2,10 +2,9 @@
 #include "task.h"
 
 #include "MicromouseConfig.h"
-#include "system_msg_queue.h"
 #include "system_control_task.h"
 #include "network_manager_task.h"
-#include "terminal_task.c"
+#include "terminal_task.h"
 
 typedef struct
 {
@@ -18,16 +17,15 @@ typedef struct
 
 TaskInitParams_t TaskInitParams[] =
 {
-  {vSystemControlTask,  "SystemControlTask",  TASK_SYSTEM_CONTROL_STACK_SIZE, NULL, TASK_SYSTEM_CONTROL_PRIORITY},
+  {vSystemControlTask,  "SystemControlTask",  TASK_SYSTEM_CONTROL_STACK_SIZE,  NULL, TASK_SYSTEM_CONTROL_PRIORITY},
   {vNetworkManagerTask, "NetworkManagerTask", TASK_NETWORK_MANAGER_STACK_SIZE, NULL, TASK_NETWORK_MANAGER_PRIORITY},
-  {vTerminalTask,       "TerminalTask",       TASK_TERMINAL_STACK_SIZE, NULL, TASK_TERMINAL_PRIORITY},
+  {vTerminalTask,       "TerminalTask",       TASK_TERMINAL_STACK_SIZE,        NULL, TASK_TERMINAL_PRIORITY},
 };
 const uint32_t TaskInitParamsCount = sizeof(TaskInitParams) / sizeof(TaskInitParams_t);
 
 void vInitTask(void *pvParameters)
 {
-  /* Initialize system queues */
-  vSensorMsgQueueInit();
+  (void)pvParameters;
 
   /* Initialize tasks */
   for(uint32_t i = 0; i < TaskInitParamsCount; i++)

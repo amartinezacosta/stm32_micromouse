@@ -6,12 +6,14 @@
 
 void vTerminalTask(void *pvParameters)
 {
+  (void)pvParameters;
+
   /* Initialize logger */
-  logger_init();
+  // logger_init();
 
   while(1)
   {
-    printf("Hello World");
-    vTaskDelay(50);
+    // printf("Hello World");
+    vTaskDelay(portMAX_DELAY);
   }
 }

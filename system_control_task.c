@@ -5,9 +5,9 @@
 #include "MicromouseConfig.h"
 #include "drivers/stm32f446xx_tim.h"
 #include "devices/motor.h"
+#include "devices/encoder.h"
 #include "motion_profile.h"
 #include "system_control_task.h"
-#include "system_msg_queue.h"
 #include "pid.h"
 
 QueueHandle_t xSensorRawMsgISRQueue;
@@ -19,8 +19,8 @@ void vSensorSysTick(void)
   BaseType_t xHigerPriorityTaskWoken = pdFALSE;
   sensor_raw_msg_t sensor_msg = {0};
 
-  sensor_msg.left_encoder = motor_left_position();
-  sensor_msg.right_encoder = motor_right_position();
+  sensor_msg.left_encoder = encoder_left_read();
+  sensor_msg.right_encoder = encoder_right_read();
 
   xQueueSendFromISR(xSensorRawMsgISRQueue, 
     &sensor_msg, 
@@ -52,15 +52,16 @@ float fSensorInputPosition(float encoder_left, float encoder_right)
 
 void vSystemControlTask(void *pvParameters)
 {
+  (void)pvParameters;
+
   /* Initialize sensor's peripheral hardware */
-  // left_motor_init();
-  // motor_right_init();
+  encoder_left_init();
+  encoder_right_init();
 
   /* Create sensor raw msg queue */
   xSensorRawMsgISRQueue = xQueueCreate(TASK_SENSOR_RAW_MSG_QUEUE, 
     sizeof(sensor_raw_msg_t));
 
-  vSensorSysTickInit();
   motion_profile_start(&motion_profile,
     200.0,
     0.0,
@@ -76,24 +77,25 @@ void vSystemControlTask(void *pvParameters)
     FORWARD_CONTROL_MAX_OUTPUT,
     FORWARD_CONTROL_MIN_OUTPUT);
 
+  vSensorSysTickInit();
+
   while(1)
   {
     sensor_raw_msg_t sensor_raw_msg = {0};
-    // sensor_msg_t sensor_msg = {0};
     
-    /*Receive sensor raw msg from timer ISR*/
+    /*1. Receive sensor raw msg from timer ISR*/
     xQueueReceive(xSensorRawMsgISRQueue,
       &sensor_raw_msg,
       portMAX_DELAY);
 
-    /*1. Process variable for state machine */
+    /*2. Process variable for state machine */
     float actual_position = fSensorInputPosition(sensor_raw_msg.left_encoder,
       sensor_raw_msg.right_encoder);
 
-    /*2. Update motion profile position */
+    /*3. Update motion profile position */
     float profile_position = motion_profile_update(&motion_profile);
 
-    /*3. PID system control */
+    /*4. PID system control */
     pid_update_setpoint(&forward_control, profile_position);
     float control = pid_update(&forward_control, actual_position);
 
